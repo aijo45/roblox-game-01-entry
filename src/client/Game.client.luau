@@ -33,6 +33,7 @@ local COMBO_WINDOW = 2.5
 -- State ------------------------------------------------------------------
 local playing = false
 local score = 0
+local bestScore = 0
 local coinsCollected = 0
 local lives = START_LIVES
 local timeLeft = GAME_TIME
@@ -196,6 +197,19 @@ startSub.AnchorPoint = Vector2.new(0.5, 0.5)
 startSub.Position = UDim2.new(0.5, 0, 0.5, 0)
 startSub.Size = UDim2.fromOffset(560, 70)
 startSub.Parent = startOverlay
+
+-- Best score across runs in this session, shown on the start screen.
+local bestLabel = Instance.new("TextLabel")
+bestLabel.Name = "Best"
+bestLabel.Text = "BEST  0"
+bestLabel.TextSize = 20
+bestLabel.Font = Enum.Font.GothamBold
+bestLabel.TextColor3 = Color3.fromRGB(170, 255, 140)
+bestLabel.BackgroundTransparency = 1
+bestLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+bestLabel.Position = UDim2.new(0.5, 0, 0.57, 0)
+bestLabel.Size = UDim2.fromOffset(560, 30)
+bestLabel.Parent = startOverlay
 
 local startHint = Instance.new("TextLabel")
 startHint.Name = "Hint"
@@ -458,9 +472,12 @@ local function endGame(reason)
 		endTitle.Text = "GAME OVER"
 		endTitle.TextColor3 = Color3.fromRGB(255, 90, 120)
 	end
+	bestScore = math.max(bestScore, score)
+	bestLabel.Text = "BEST  " .. tostring(bestScore)
 	endStats.Text = "Score: " .. tostring(score)
 		.. "\nCoins: " .. tostring(coinsCollected)
 		.. "   •   Level reached: " .. tostring(level)
+		.. "\nBest: " .. tostring(bestScore)
 	endOverlay.Visible = true
 	updateHUD()
 end
